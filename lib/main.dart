@@ -193,7 +193,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Image.asset(
                             'assets/images/newsday.png',
+                            height: 90,
                           ),
+                          const SizedBox(height: 5),
                           Text(
                             'Newsday Sports',
                             style: TextStyle(fontWeight: FontWeight.bold),
