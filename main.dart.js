@@ -59049,17 +59049,18 @@ r=k.d
 r===$&&A.c()
 e=A.iz(A.dq("assets/images/headshot.png",B.vj,j,j),e*0.45,g.a)
 q=s?300:50
-p=t.F
-q=A.uf(B.W,A.a([e,new A.ba(new A.aQ(q,0,0,0),new A.dH(B.d_,j,j,A.Ym("Up your game.",A.iE(j,j,B.iz,j,j,j,j,j,"Montserrat",j,j,26,j,j,B.j,j,j,!0,j,3,j,j,j,j,j,j)),j),j)],p),B.cV)
-e=A.a([A.a73(A.dL(A.a([A.dq("assets/images/emmy.png",j,80,j),B.GM,B.Lv],p),B.T,B.U),B.dc)],p)
-if(s)e.push(A.a73(new A.ba(B.yn,A.dL(A.a([A.dq("assets/images/newsday.png",j,90,j),B.e4,B.LC],p),B.T,B.U),j),B.eZ))
-e.push(A.a73(A.dL(A.a([B.GN,A.dq("assets/images/news12.png",j,j,j),B.GO,B.LE],p),B.T,B.U),B.bH))
-e=A.We(e,B.bc,B.CG,B.U)
-o=s?100:50
+p=s?"Up your game.":"Up your\ngame."
+o=t.F
+p=A.uf(B.W,A.a([e,new A.ba(new A.aQ(q,0,0,0),new A.dH(B.d_,j,j,A.Ym(p,A.iE(j,j,B.iz,j,j,j,j,j,"Montserrat",j,j,26,j,j,B.j,j,j,!0,j,3,j,j,j,j,j,j)),j),j)],o),B.cV)
+q=A.a([A.a73(A.dL(A.a([A.dq("assets/images/emmy.png",j,80,j),B.GM,B.Lv],o),B.T,B.U),B.dc)],o)
+if(s)q.push(A.a73(new A.ba(B.yn,A.dL(A.a([A.dq("assets/images/newsday.png",j,90,j),B.e4,B.LC],o),B.T,B.U),j),B.eZ))
+q.push(A.a73(A.dL(A.a([B.GN,A.dq("assets/images/news12.png",j,j,j),B.GO,B.LE],o),B.T,B.U),B.bH))
+e=A.We(q,B.bc,B.CG,B.U)
+q=s?100:50
 n=s?100:50
 m=s?100:50
 l=s?100:50
-return new A.tE(!0,h,new A.uL(new A.E1(r,B.wI,A.dL(A.a([q,B.cU,new A.ba(B.aX,e,j),B.cU,A.dL(A.a([new A.ba(new A.aQ(o,0,o,0),B.LO,j),B.cU,new A.ba(new A.aQ(n,0,n,0),B.Ly,j),B.cU,new A.ba(new A.aQ(m,0,0,0),B.uQ,j),new A.ba(new A.aQ(l,0,l,0),B.y2,j),B.cU,new A.Fa(A.a([new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie1.jpg",j,300,400),B.br,B.DR,B.DY],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie2.jpg",j,300,400),B.br,B.E0,B.DZ],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie3.jpg",j,300,400),B.br,B.DP,B.DU],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/conference.jpeg",B.d1,300,400),B.br,B.E2,B.DQ],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/audience.webp",B.d1,300,400),B.br,B.DX,B.DV],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/public.jpeg",B.d1,300,400),B.br,B.DW,B.DO],p),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/speech.jpeg",B.d1,300,400),B.br,B.E1,B.E_],p),B.T,B.U),j)],p),k.r),A.aaL(B.DS,new A.a2z(),A.a7c(j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,B.ui,j)),B.GL,A.aaL(B.DT,new A.a2A(),A.a7c(j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,B.ui,j)),B.GK],p),B.T,B.U)],p),B.T,B.U),j),r,0.3,10,B.om,d,j),A.aaR(B.yW,!1,new A.a2B(),"Email me"),f,j)}}
+return new A.tE(!0,h,new A.uL(new A.E1(r,B.wI,A.dL(A.a([p,B.cU,new A.ba(B.aX,e,j),B.cU,A.dL(A.a([new A.ba(new A.aQ(q,0,q,0),B.LO,j),B.cU,new A.ba(new A.aQ(n,0,n,0),B.Ly,j),B.cU,new A.ba(new A.aQ(m,0,0,0),B.uQ,j),new A.ba(new A.aQ(l,0,l,0),B.y2,j),B.cU,new A.Fa(A.a([new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie1.jpg",j,300,400),B.br,B.DR,B.DY],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie2.jpg",j,300,400),B.br,B.E0,B.DZ],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/jamie3.jpg",j,300,400),B.br,B.DP,B.DU],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/conference.jpeg",B.d1,300,400),B.br,B.E2,B.DQ],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/audience.webp",B.d1,300,400),B.br,B.DX,B.DV],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/public.jpeg",B.d1,300,400),B.br,B.DW,B.DO],o),B.T,B.U),j),new A.ba(B.aX,A.dL(A.a([A.dq("assets/images/speech.jpeg",B.d1,300,400),B.br,B.E1,B.E_],o),B.T,B.U),j)],o),k.r),A.aaL(B.DS,new A.a2z(),A.a7c(j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,B.ui,j)),B.GL,A.aaL(B.DT,new A.a2A(),A.a7c(j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,B.ui,j)),B.GK],o),B.T,B.U)],o),B.T,B.U),j),r,0.3,10,B.om,d,j),A.aaR(B.yW,!1,new A.a2B(),"Email me"),f,j)}}
 A.a2v.prototype={
 $0(){var s=this.a,r=s.d
 r===$&&A.c()
