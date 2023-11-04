@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TopBar extends StatefulWidget {
   final double opacity;
+  final ScrollController scrollController;
+  final GlobalKey dataKey;
 
-  TopBar(this.opacity);
+  const TopBar(this.opacity,
+      {super.key, required this.scrollController, required this.dataKey});
 
   @override
-  _TopBarState createState() => _TopBarState();
+  State<TopBar> createState() => _TopBarState();
 }
 
 class _TopBarState extends State<TopBar> {
@@ -21,8 +25,6 @@ class _TopBarState extends State<TopBar> {
     false
   ];
 
-  bool _isProcessing = false;
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
@@ -32,20 +34,24 @@ class _TopBarState extends State<TopBar> {
       child: Container(
         color: Colors.black.withOpacity(widget.opacity),
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'JAMIE STUART',
-                style: TextStyle(
-                  color: Colors.blueGrey[100],
-                  fontSize: 20,
-                  fontFamily: 'Montserrat',
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 3,
-                ),
+              Image.asset(
+                'assets/images/jamie-logo-white.png',
+                height: 70,
               ),
+              // Text(
+              //   'JAMIE STUART',
+              //   style: TextStyle(
+              //     color: Colors.blueGrey[100],
+              //     fontSize: 20,
+              //     fontFamily: 'Montserrat',
+              //     fontWeight: FontWeight.w400,
+              //     letterSpacing: 3,
+              //   ),
+              // ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -59,7 +65,13 @@ class _TopBarState extends State<TopBar> {
                               : _isHovering[0] = false;
                         });
                       },
-                      onTap: () {},
+                      onTap: () {
+                        widget.scrollController.animateTo(
+                          widget.scrollController.position.minScrollExtent,
+                          duration: const Duration(seconds: 2),
+                          curve: Curves.fastOutSlowIn,
+                        );
+                      },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -72,7 +84,7 @@ class _TopBarState extends State<TopBar> {
                               fontSize: 20,
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Visibility(
                             maintainAnimation: true,
                             maintainState: true,
@@ -96,24 +108,67 @@ class _TopBarState extends State<TopBar> {
                               : _isHovering[1] = false;
                         });
                       },
-                      onTap: () {},
+                      onTap: () =>
+                          Scrollable.ensureVisible(widget.dataKey.currentContext!),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'Contact',
+                            'Services',
                             style: TextStyle(
                                 color: _isHovering[1]
                                     ? Colors.blue[200]
                                     : Colors.white,
                                 fontSize: 20),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Visibility(
                             maintainAnimation: true,
                             maintainState: true,
                             maintainSize: true,
                             visible: _isHovering[1],
+                            child: Container(
+                              height: 2,
+                              width: 20,
+                              color: Colors.white,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: screenSize.width / 20),
+                    InkWell(
+                      onHover: (value) {
+                        setState(() {
+                          value
+                              ? _isHovering[2] = true
+                              : _isHovering[2] = false;
+                        });
+                      },
+                      onTap: () {
+                        widget.scrollController.animateTo(
+                          widget.scrollController.position.maxScrollExtent,
+                          duration: const Duration(seconds: 2),
+                          curve: Curves.fastOutSlowIn,
+                        );
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Contact',
+                            style: TextStyle(
+                                color: _isHovering[2]
+                                    ? Colors.blue[200]
+                                    : Colors.white,
+                                fontSize: 20),
+                          ),
+                          const SizedBox(height: 5),
+                          Visibility(
+                            maintainAnimation: true,
+                            maintainState: true,
+                            maintainSize: true,
+                            visible: _isHovering[2],
                             child: Container(
                               height: 2,
                               width: 20,
@@ -132,10 +187,12 @@ class _TopBarState extends State<TopBar> {
                       value ? _isHovering[3] = true : _isHovering[3] = false;
                     });
                   },
-                  onTap: () {},
+                  onTap: () async {
+                    await launchUrl(Uri.parse('https://x.com/jamiestuarttv'));
+                  },
                   child: Image.asset(
                     'assets/images/x.png',
-                    height: 25,
+                    height: 23,
                   )),
               SizedBox(
                 width: screenSize.width / 50,
@@ -146,7 +203,10 @@ class _TopBarState extends State<TopBar> {
                       value ? _isHovering[3] = true : _isHovering[3] = false;
                     });
                   },
-                  onTap: () {},
+                  onTap: () async {
+                    await launchUrl(
+                        Uri.parse('https://instagram.com/n12jamiestuart'));
+                  },
                   child: Image.asset(
                     'assets/images/ig.png',
                     height: 25,

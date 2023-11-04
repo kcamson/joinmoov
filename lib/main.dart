@@ -1,6 +1,8 @@
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:jamie/widgets/top_bar.dart';
 import 'package:jamie/widgets/web_scrollbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -74,29 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  List<Widget> navItems = [
-    InkWell(
-      onTap: () {},
-      child: Text(
-        'Discover',
-        style: TextStyle(color: Colors.black),
-      ),
-    ),
-    ElevatedButton(onPressed: () {}, child: Text('Education')),
-    ElevatedButton(onPressed: () {}, child: Text('Hey')),
-  ];
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final dataKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -114,23 +94,74 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       extendBodyBehindAppBar: true,
+
       appBar: isWide
           ? PreferredSize(
               // for larger & medium screen sizes
               preferredSize: Size(screenSize.width, 1000),
-              child: TopBar(_opacity),
+              child: TopBar(_opacity,
+                  scrollController: _scrollController, dataKey: dataKey),
             )
           : AppBar(
-              actions: isWide ? navItems : [],
+              iconTheme: const IconThemeData(color: Colors.white),
               // TRY THIS: Try changing the color here to a specific color (to
               // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
               // change color while the other colors stay the same.
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              backgroundColor: Colors.black.withOpacity(_opacity),
               // Here we take the value from the MyHomePage object that was created by
               // the App.build method, and use it to set our appbar title.
-              title: Text(widget.title),
+              title: Image.asset(
+                'assets/images/jamie-logo-white.png',
+                height: 70,
+              ),
             ),
-      drawer: isWide ? null : ListView(children: navItems),
+      drawer: isWide
+          ? null
+          : Drawer(
+              child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: const BoxDecoration(
+                    color: Colors.black87,
+                  ),
+                  child: Image.asset(
+                    'assets/images/jamie-logo-white.png',
+                    height: 70,
+                  ),
+                ),
+                ListTile(
+                    leading: const Icon(Icons.home),
+                    title: const Text('Home'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _scrollController.animateTo(
+                        _scrollController.position.minScrollExtent,
+                        duration: const Duration(seconds: 2),
+                        curve: Curves.fastOutSlowIn,
+                      );
+                    }),
+                ListTile(
+                    leading: const Icon(Icons.apps),
+                    title: const Text('Services'),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Scrollable.ensureVisible(dataKey.currentContext!);
+                    }),
+                ListTile(
+                  leading: const Icon(Icons.account_circle),
+                  title: const Text('Contact'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: const Duration(seconds: 2),
+                      curve: Curves.fastOutSlowIn,
+                    );
+                  },
+                ),
+              ],
+            )),
       body: WebScrollbar(
         color: Colors.blueGrey,
         backgroundColor: Colors.blueGrey.withOpacity(0.3),
@@ -139,31 +170,32 @@ class _MyHomePageState extends State<MyHomePage> {
         controller: _scrollController,
         child: SingleChildScrollView(
           controller: _scrollController,
-          physics: ClampingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           child: Column(
             children: [
               Stack(alignment: Alignment.center, children: [
-                Container(
-                  child: SizedBox(
-                    height: screenSize.height * 0.45,
-                    width: screenSize.width,
-                    child: Image.asset(
-                      'assets/images/headshot.png',
-                      // 'https://firebasestorage.googleapis.com/v0/b/whatsthemoov-app.appspot.com/o/do-not-delete%2Fvideo_preview.png?alt=media&token=54976899-a3dc-460e-9c1f-1825bbee8bac&_gl=1*1h2vnsn*_ga*OTI2NzE2OTguMTY4MDE5ODE0MA..*_ga_CW55HF8NVT*MTY5OTA5NjE3Ny40MTMuMS4xNjk5MDk2NzkxLjM5LjAuMA..',
-                      fit: BoxFit.cover,
-                    ),
+                SizedBox(
+                  height: screenSize.height * 0.45,
+                  width: screenSize.width,
+                  child: Image.asset(
+                    'assets/images/headshot.png',
+                    // 'https://firebasestorage.googleapis.com/v0/b/whatsthemoov-app.appspot.com/o/do-not-delete%2Fvideo_preview.png?alt=media&token=54976899-a3dc-460e-9c1f-1825bbee8bac&_gl=1*1h2vnsn*_ga*OTI2NzE2OTguMTY4MDE5ODE0MA..*_ga_CW55HF8NVT*MTY5OTA5NjE3Ny40MTMuMS4xNjk5MDk2NzkxLjM5LjAuMA..',
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 200),
-                  child: Text(
-                    'UP YOUR GAME',
-                    style: TextStyle(
-                      color: Colors.blueGrey[100],
-                      fontSize: 26,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 3,
+                  padding: EdgeInsets.only(left: isWide ? 300 : 50),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      isWide ? 'Up your game.' : 'Up your\ngame.',
+                      style: TextStyle(
+                        color: Colors.blueGrey[100],
+                        fontSize: 26,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 3,
+                      ),
                     ),
                   ),
                 ),
@@ -174,48 +206,57 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Column(
-                      children: [
-                        Image.asset(
-                          'assets/images/emmy.png',
-                          height: 80,
-                        ),
-                        const SizedBox(height: 17),
-                        Text(
-                          '6x Emmy Winner',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 50),
+                    DelayedDisplay(
+                      delay: const Duration(milliseconds: 400),
                       child: Column(
                         children: [
                           Image.asset(
-                            'assets/images/newsday.png',
-                            height: 90,
+                            'assets/images/emmy.png',
+                            height: 80,
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            'Newsday Sports',
+                          const SizedBox(height: 17),
+                          const Text(
+                            '7x Emmy Winner',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
                     ),
-                    if (isWide) 
-                    Column(
-                      children: [
-                        const SizedBox(height: 24),
-                        Image.asset(
-                          'assets/images/news12.png',
+                    if (isWide)
+                      DelayedDisplay(
+                        delay: const Duration(milliseconds: 500),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 50),
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/newsday.png',
+                                height: 90,
+                              ),
+                              const SizedBox(height: 5),
+                              const Text(
+                                'Newsday Sports',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 30),
-                        Text(
-                          'News 12',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
+                      ),
+                    DelayedDisplay(
+                      delay: const Duration(milliseconds: 600),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 24),
+                          Image.asset(
+                            'assets/images/news12.png',
+                          ),
+                          const SizedBox(height: 30),
+                          const Text(
+                            'News 12',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -224,8 +265,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: isWide ? 100 : 50),
+                    child: const Text(
                       'Nothing In Business Is More Vital Than Communication.',
                       textAlign: TextAlign.center,
                       style:
@@ -234,17 +276,370 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   const SizedBox(height: 50),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 100),
-                    child: Text(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: isWide ? 100 : 50),
+                    child: const Text(
                       '''How you communicate – with a potential client via email, on your company’s daily zoom meeting, in your pitch at the C-suite level boardroom, or at the annual industry conference in front of 2,000 people – can make or break you as an individual and your company at-large.'''
                       '''\n\nBut being dynamic when you speak – clear, concise and compelling – isn’t easy, especially if there’s a bright light (or six) shining in your eyes.'''
-                      '''\n\nWith 25 years of TV experience as an anchor at the network and local levels, I have the inside scoop to help. I have broadcast live in front of millions of people, covering everything from Wall Street to the Super Bowl to politics, bio-tech and more.
+                      '''\n\nWith 23 years of TV experience as an anchor and reporter, I have the inside scoop to help. I have broadcast live in front of millions of people, covering everything from politics to the Super Bowl to live interviews.
 '''
-                      '''\nI know what it takes to perform under pressure, and I’ll give you the secrets – how to get over stage fright, what to do with your hands, when to take a breath, and countless more tips – to help you connect with your audience and finally reach your true potential. From media training to speech writing to executive presence, let me help elevate your game.''' // FloatingQuickAccessBar(screenSize: screenSize),
-                      ,
+                      '''\nI know what it takes to perform under pressure, and I’ll give you the secrets – how to get over stage fright, what to do with your hands, when to take a breath, and countless more tips – to help you connect with your audience and finally reach your true potential. From media training to speech writing to executive presence, let me help elevate your game.
+''',
                       style: TextStyle(fontSize: 20),
                     ),
-                  ), // Container(
+                  ),
+                  const SizedBox(height: 50),
+                  Padding(
+                    padding: EdgeInsets.only(left: isWide ? 100 : 50),
+                    child: const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Services',
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: isWide ? 100 : 50),
+                    child: const Divider(),
+                  ),
+                  const SizedBox(height: 50),
+                  Wrap(key: dataKey, children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/jamie1.jpg',
+                            width: 400,
+                            height: 300,
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Executive Presence',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''Whenever you communicate – not just speaking publicly but in emails
+and social media posts - you represent your company.
+\nEverything matters - from how you stand to how far away the
+microphone is from your mouth to your hand gestures to your wardrobe.
+\nLearn the keys to commanding a zoom and commanding a room, just
+like the best do it on broadcast TV.\n\n''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/jamie2.jpg',
+                            width: 400,
+                            height: 300,
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Image Consulting',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''How you appear matters – in public and in private meetings, too. 
+\nAnd it’s not just clothes. 
+\nSweating on-camera makes you look nervous; that’s bad for business. 
+\nFrom your wardrobe and hair, to makeup (yes, guys, if you’re appearing on-camera, you should be wearing some. Tom Cruise & Denzel Washington do it, and so should you). 
+\nLearn how to elevate your game – without changing YOU.\n\n''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Interview Prep
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/jamie3.jpg',
+                            width: 400,
+                            height: 300,
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Interview Prep',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''You've finally landed the big interview.
+\nBut how do you make a great first impression? How much talking should you do, and how much should you listen? How do you properly accentuate your accomplishments while deflecting the inevitable tough questions about any weaknesses on your resume?
+\nIn a hybrid world, you have to know how to ace these opportunities both virtually and in-person.
+\nYou have to tell YOUR story while listening to theirs. You have to assure them you can stand out - while fitting in with their team.
+\nNo, it isn't easy.
+\nBut I've done it, and I'll help you thrive in a high-stakes environment, giving you the best chance to reach your dream.\n
+''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Video Conferencing
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/conference.jpeg',
+                              width: 400, height: 300, fit: BoxFit.fitHeight),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Video Conferencing',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''The world has changed, and I hear it over and over again in every industry - you need to excel on Zoom, Teams or whatever platform your company uses. 
+\nSo why do so many executives get it so wrong? 
+\nLooking in the wrong place, overdoing (or underdoing) the background, sitting too far (or too close) to the camera, forgetting that silence can be your best friend…
+\nVideo conferencing is an art, and there are numerous ways to become a more dynamic presence online.
+\nI’ll teach you how.\n\n''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Master Messaging
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/audience.webp',
+                            width: 400,
+                            height: 300,
+                            fit: BoxFit.fitHeight,
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Master Messaging',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''The best and most important information so often gets lost in the weeds because people are not as clear and concise as they need to be. 
+\nWhat you say doesn’t matter if your audience doesn’t internalize it, and that’s as true for 1-on-1 meetings as it is for a gigantic presentation. 
+\nI’ll teach you how to cut to the chase while emphasizing the key points you need to get across – whether your target is a single, potential client or a convention center filled with thousands of them. Make your time – and theirs – count.\n
+''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Public Speaking
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/public.jpeg',
+                            width: 400,
+                            height: 300,
+                            fit: BoxFit.fitHeight,
+                          ),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Public Speaking',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''If you’re a forward-facing person at your company, public speaking is simply part of the job.
+\nIt can be overwhelming, and frankly, why wouldn’t it be? You’ve never been trained for it.
+\nI have, and I’ll reveal all of the skills and devices you can use to overcome your nerves and connect with your audience.\n
+''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+
+                    // Speech Writing
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/images/speech.jpeg',
+                              width: 400, height: 300, fit: BoxFit.fitHeight),
+                          const SizedBox(height: 10),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              'Speech Writing',
+                              style: TextStyle(
+                                color: Colors.blueGrey,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(15),
+                            child: SizedBox(
+                              width: 400,
+                              child: Text(
+                                '''Whether it’s a keynote speech or a simple company announcement, the writing is just as important as the delivery, especially if you’ve entrusted the writing itself to an associate. 
+\nI’ll show you how to take someone else’s words and make them yours by answering age-old questions (Should I write it all out, or just use bullet points?  Are index cards the way to go?  How long is too long?) to help you synthesize your message and deliver a winning speech every time.
+\nPowerPoints are often the low point in a presentation, but they don’t have to be. 
+\nLearn the strategies used by the best graphics departments in broadcast television to make your slides accentuate your speech, leaving your audience buzzing about your visual aids in addition to what you say.\n
+''',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ]),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 25)),
+                      onPressed: () => launchUrl(
+                          Uri.parse('mailto:jamieleestuart@gmail.com')),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: 350,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.email),
+                              SizedBox(width: 10),
+                              Text('jamieleestuart@gmail.com'),
+                            ],
+                          ),
+                        ),
+                      )),
+                  const SizedBox(height: 15),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(fontSize: 25)),
+                    onPressed: () => launchUrl(Uri.parse('tel:+15162403836')),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 350,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.phone),
+                            SizedBox(width: 10),
+                            Text('(516) 240-3836'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                  // Container(
                   //   child: Column(
                   //     children: [
                   //       FeaturedHeading(
@@ -266,9 +661,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () async {
+          launchUrl(Uri.parse('mailto:jamieleestuart@gmail.com'));
+        },
+        tooltip: 'Email me',
+        child: const Icon(Icons.message),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

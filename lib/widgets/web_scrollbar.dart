@@ -11,7 +11,7 @@ class WebScrollbar extends StatefulWidget {
   final Color backgroundColor;
   final bool isAlwaysShown;
 
-  WebScrollbar({
+  const WebScrollbar({super.key, 
     required this.child,
     required this.controller,
     this.heightFraction = 0.20,
@@ -22,7 +22,7 @@ class WebScrollbar extends StatefulWidget {
   }) : assert(heightFraction < 1.0 && heightFraction > 0.0);
 
   @override
-  _WebScrollbarState createState() => _WebScrollbarState();
+  State<WebScrollbar> createState() => _WebScrollbarState();
 }
 
 class _WebScrollbarState extends State<WebScrollbar> {
@@ -46,13 +46,13 @@ class _WebScrollbarState extends State<WebScrollbar> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    double _scrollerHeight = screenSize.height * widget.heightFraction;
+    double scrollerHeight = screenSize.height * widget.heightFraction;
 
-    double _topMargin = widget.controller.hasClients
+    double topMargin = widget.controller.hasClients
         ? ((screenSize.height *
                 _scrollPosition /
                 widget.controller.position.maxScrollExtent) -
-            (_scrollerHeight *
+            (scrollerHeight *
                 _scrollPosition /
                 widget.controller.position.maxScrollExtent))
         : 0;
@@ -66,7 +66,7 @@ class _WebScrollbarState extends State<WebScrollbar> {
               _isUpdating = true;
             });
           } else {
-            timer = Timer(Duration(seconds: 5), () {
+            timer = Timer(const Duration(seconds: 5), () {
               setState(() {
                 _isUpdating = false;
               });
@@ -86,7 +86,7 @@ class _WebScrollbarState extends State<WebScrollbar> {
                         ? 1
                         : 0
                     : 0,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             child: Container(
               alignment: Alignment.centerRight,
               height: MediaQuery.of(context).size.height,
@@ -99,22 +99,22 @@ class _WebScrollbarState extends State<WebScrollbar> {
                 alignment: Alignment.topCenter,
                 child: GestureDetector(
                   child: Container(
-                    height: _scrollerHeight,
+                    height: scrollerHeight,
                     width: widget.width,
                     margin: EdgeInsets.only(
                       left: 1.0,
                       right: 1.0,
-                      top: _topMargin,
+                      top: topMargin,
                     ),
                     decoration: BoxDecoration(
                       color: widget.color,
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(3.0),
                       ),
                     ),
                   ),
                   onTapCancel: () {
-                    timer = Timer(Duration(seconds: 5), () {
+                    timer = Timer(const Duration(seconds: 5), () {
                       setState(() {
                         _isUpdating = false;
                       });
@@ -132,7 +132,7 @@ class _WebScrollbarState extends State<WebScrollbar> {
                         dragUpdate.globalPosition.dy *
                             (_scrollPosition /
                                 widget.controller.position.maxScrollExtent) -
-                        (_scrollerHeight *
+                        (scrollerHeight *
                             _scrollPosition /
                             widget.controller.position.maxScrollExtent));
 
@@ -145,7 +145,7 @@ class _WebScrollbarState extends State<WebScrollbar> {
                                 (_scrollPosition /
                                     widget
                                         .controller.position.maxScrollExtent) -
-                            (_scrollerHeight *
+                            (scrollerHeight *
                                 _scrollPosition /
                                 widget.controller.position.maxScrollExtent);
                       }
